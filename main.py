@@ -43,7 +43,10 @@ def generateMonthSheets(wb, year, month):
     delete_sheets = wb.sheetnames[1:]
     for sheet_name in delete_sheets:
         del wb[sheet_name]
-    days_in_month = (datetime(year, month + 1, 1) - timedelta(days=1)).day
+    if month == 12:
+        days_in_month = 31
+    else:
+        days_in_month = (datetime(year, month + 1, 1) - timedelta(days=1)).day
     for day in range(2, days_in_month + 1):
         new_sheet = wb.copy_worksheet(wb.worksheets[0])
         new_sheet.title = f"sheet_{day}"
@@ -88,5 +91,10 @@ def createMonthReportFile(file_path, year, month):
 if __name__ == "__main__":
     file_path = "original.xlsx"  # Update to your actual file path
     year = 2025
-    month = 3  # March
-    createMonthReportFile(file_path, year, month)
+    month = 12  # March
+    total_year=True
+    if total_year:
+        for month in range(1, 13):
+            createMonthReportFile(file_path, year, month)
+    else:
+        createMonthReportFile(file_path, year, month)
