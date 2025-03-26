@@ -1,7 +1,0 @@
-echo "# excel_dynamic_date" >> README.md
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/Thanoon12k/excel_dynamic_date.git
-git push -u origin main

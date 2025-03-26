@@ -64,7 +64,7 @@ def change_sheet_dates_headers( year, month, wb):
         sheet.merge_cells(f"G3:I3")
         sheet["G3"].alignment = openpyxl.styles.Alignment(horizontal="center")
 
-def delete_date_table(wb):
+def delete_date_table_from_other_sheets(wb):
     for sheet in wb.worksheets[1:]:
         for row in range(39, 76):
             sheet[f"B{row}"] = None
@@ -73,16 +73,20 @@ def delete_date_table(wb):
             sheet[f"C{row}"].fill = openpyxl.styles.PatternFill(start_color="FFFFFF", end_color="FFFFFF", fill_type="solid")
 
 
+def createMonthReportFile(file_path, year, month):
+    wb = openpyxl.load_workbook(file_path)
+    wb.worksheets[0].title = f"sheet_1"
+    update_date_table_on_first_sheet(wb.worksheets[0],year, month)
+
+    wb=generateMonthSheets(wb, year, month)
+    change_sheet_dates_headers( year, month, wb)
+    delete_date_table_from_other_sheets(wb)
+    output_file_path = f"{arabic_month_names[month]}_{year}.xlsx"
+    wb.save(output_file_path)
+    return output_file_path
+
 if __name__ == "__main__":
     file_path = "original.xlsx"  # Update to your actual file path
     year = 2025
     month = 3  # March
-    wb = openpyxl.load_workbook(file_path)
-    wb.worksheets[0].title = f"sheet_1"
-    wb.worksheets[0]=update_date_table_on_first_sheet(wb.worksheets[0],year, month)
-
-    wb=generateMonthSheets(wb, year, month)
-    change_sheet_dates_headers( year, month, wb)
-    delete_date_table( wb)
-    output_file_path = f"{arabic_month_names[month]}_{year}.xlsx"
-    wb.save(output_file_path)
+    createMonthReportFile(file_path, year, month)
